@@ -37,9 +37,10 @@ for line in csv_train:
 
 print("1")
 
-'''
+
+preprocessing.LabelBinarizer().fit_transform()
 Ybin = preprocessing.MultiLabelBinarizer().fit_transform(Y)
-'''
+
 
 f = open('/home/mikhail/Documents/research/predict_result.csv', 'wt')
 writer = csv.writer(f)
@@ -56,21 +57,21 @@ X_train = vectorizer.fit_transform(X)
 
 from sklearn.ensemble import RandomForestClassifier
 ens = RandomForestClassifier(n_estimators=100)
-
+'''
 svm_mod = OneVsRestClassifier(SVC(probability=True))
 
 ens_mod = OneVsRestClassifier(RandomForestClassifier(n_estimators=1000, max_depth=3, max_features=None, criterion='entropy'))
-
+'''
 simple_svm = SVC(probability=True)
 
-
+'''
 from sklearn.cross_validation import KFold
 
 
 kf = KFold(6153, n_folds=2)
+'''
 
-
-
+'''
 for train, test in kf:
     print(train)
     print(test)
@@ -81,24 +82,30 @@ for train, test in kf:
 print("2")
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import AdaBoostClassifier
+'''
 
+from sklearn.cross_validation import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X_train, Yr, test_size=0.33, random_state=42)
+'''
 ada = AdaBoostClassifier(ens, n_estimators=100)
 est = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=0)
 
 ens = RandomForestClassifier(n_estimators=100)
 ada = AdaBoostClassifier(ens, n_estimators=100)
+'''
 
-simple_svm.fit(X_tr.toarray(), Yran_train)
-
-
-y_svm_predicted = simple_svm.predict_proba(X_test.toarray())
+simple_svm.fit(X_train, y_train)
 
 
-print(y_svm_predicted )
+y_svm_predicted = simple_svm.predict(X_test)
+
+
+print(y_svm_predicted)
 
 
 
-
+'''
 
 for i in y_svm_predicted:
     writer.writerow((i))
@@ -125,20 +132,19 @@ for i in get_res:
 writer.writerow(("!!!!!!!!"))
 
 f.close()
-
+'''
 
 print "MODEL: RBF SVM\n"
 
 
-print 'The precision for this classifier is ' + str(metrics.precision_score(Ybi_test, get_res, average='micro'))
-print 'The recall for this classifier is ' + str(metrics.recall_score(Ybi_test, get_res, average='micro'))
-print 'The f1 for this classifier is ' + str(metrics.f1_score(Ybi_test, get_res, average='micro'))
-print 'The accuracy for this classifier is ' + str(metrics.accuracy_score(Ybi_test, get_res))
+print 'The precision for this classifier is ' + str(metrics.precision_score(y_test, y_svm_predicted))
+print 'The recall for this classifier is ' + str(metrics.recall_score(y_test, y_svm_predicted))
+print 'The f1 for this classifier is ' + str(metrics.f1_score(y_test, y_svm_predicted))
+print 'The accuracy for this classifier is ' + str(metrics.accuracy_score(y_test, y_svm_predicted))
 
-print 'The precision for this classifier is ' + str(metrics.precision_score(Ybi_test, get_res, average=None))
-print 'The recall for this classifier is ' + str(metrics.recall_score(Ybi_test, get_res, average=None))
-print 'The f1 for this classifier is ' + str(metrics.f1_score(Ybi_test, get_res))
-
+print 'The precision for this classifier is ' + str(metrics.precision_score(y_test, y_svm_predicted, average=None))
+print 'The recall for this classifier is ' + str(metrics.recall_score(y_test, y_svm_predicted, average=None))
+print 'The f1 for this classifier is ' + str(metrics.f1_score(y_test, y_svm_predicted))
 
 print '\nHere is the classification report:'
 
